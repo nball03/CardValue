@@ -10,15 +10,20 @@ API_KEY = os.environ.get("SCRAPER_API_KEY")
 def check_price():
     print("Iniciando scraper a través de API proxy...")
     
+# Imprimimos los primeros caracteres de la URL para verificar que el Secret está bien
+    # (Si pone "None" o sale con comillas, el Secret está mal configurado)
+    print(f"URL objetivo: {str(URL)[:40]}...")
+
     # Configuramos la petición a ScraperAPI
     payload = {
         'api_key': API_KEY,
         'url': URL,
-        'keep_headers': 'true'
+        'keep_headers': 'true',
+        'country_code': 'eu' # <-- ¡CLAVE! Forzamos a usar IPs de Europa
     }
     
-    # Hacemos la petición a la API en lugar de a Cardmarket directamente
-    print("Conectando con el proxy para evadir Cloudflare...")
+    # Hacemos la petición a la API
+    print("Conectando con el proxy (IP Europea) para evadir Cloudflare...")
     response = requests.get('https://api.scraperapi.com/', params=payload)
     
     if response.status_code != 200:
