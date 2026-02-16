@@ -8,7 +8,6 @@ URL = os.getenv("CARD_URL")
 NTFY_TOPIC = os.getenv("NTFY_TOPIC")
 
 def check_price():
-    # Creamos el scraper que emula un navegador real
     scraper = cloudscraper.create_scraper(
         browser={'browser': 'chrome', 'platform': 'windows', 'desktop': True}
     )
@@ -21,13 +20,26 @@ def check_price():
 
     soup = BeautifulSoup(response.text, 'html.parser')
     
-    # Selector CSS para el precio (esto puede variar, hay que inspeccionar el HTML)
-    # Por ejemplo, el precio del artículo más barato suele estar en este selector:
-    price_element = soup.select_one(".price-container .h2")
+    # 1. Buscamos el elemento <dt> que contiene el texto exacto que precede a tu dato.
+    # Nota: Asegúrate de poner el texto tal cual aparece en la web.
+    etiqueta_titulo = soup.find('dt', string=lambda text: text and 'Precio medio 1 dia' in text)
     
-    if price_element:
-        price = price_element.text.strip()
-        send_notification(price)
+    if etiqueta_titulo:
+        # 2. Buscamos el siguiente elemento hermano (<dd>)
+        etiqueta_valor = etiqueta_titulo.find_next_sibling('dd')
+        
+        if etiqueta_valor:
+            # 3. Extraemos el texto del <span> que está dentro del <dd>
+            span_precio = etiqueta_valor.find('span')
+            
+            if span_precio:
+                precio_actual = span_precio.text.strip()
+                print(f"¡Precio encontrado! {precio_actual}")
+                send_notification(precio_actual)
+            else:
+                print("No se encontró el <span> dentro del <dd>")
+    else:
+        print("No se encontró la etiqueta 'Precio medio 1 dia'")
 
 def send_notification(price):
     requests.post(f"https://ntfy.sh/{NTFY_TOPIC}",
