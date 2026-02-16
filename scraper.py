@@ -9,25 +9,23 @@ API_KEY = os.environ.get("SCRAPER_API_KEY")
 
 def check_price():
     print("Iniciando scraper a través de API proxy...")
-    
-# Imprimimos los primeros caracteres de la URL para verificar que el Secret está bien
-    # (Si pone "None" o sale con comillas, el Secret está mal configurado)
     print(f"URL objetivo: {str(URL)[:40]}...")
 
     # Configuramos la petición a ScraperAPI
     payload = {
         'api_key': API_KEY,
         'url': URL,
-        'keep_headers': 'true',
-        'country_code': 'eu' # <-- ¡CLAVE! Forzamos a usar IPs de Europa
+        'country_code': 'eu'
+        # Hemos eliminado keep_headers para que ScraperAPI disfrace la petición de navegador real
     }
     
-    # Hacemos la petición a la API
     print("Conectando con el proxy (IP Europea) para evadir Cloudflare...")
     response = requests.get('https://api.scraperapi.com/', params=payload)
     
     if response.status_code != 200:
         print(f"❌ Error {response.status_code}: La API proxy falló o fue bloqueada.")
+        # ESTO ES CLAVE: Imprimimos la respuesta para ver exactamente quién nos bloquea
+        print(f"🔎 Pista del error: {response.text[:500]}") 
         return
 
     print("✅ Conexión exitosa. Analizando el HTML...")
