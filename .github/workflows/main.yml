@@ -29,4 +29,5 @@ jobs:
           # Inyectamos los secretos de GitHub como variables de entorno
           CARD_URL: ${{ secrets.CARD_URL }}
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          SCRAPER_API_KEY: ${{ secrets.SCRAPER_API_KEY }}
         run: python scraper.py
