@@ -3,9 +3,9 @@ import requests
 from bs4 import BeautifulSoup
 
 # --- CONFIGURACIÓN ---
-URL = os.environ.get("CARD_URL")
-NTFY_TOPIC = os.environ.get("NTFY_TOPIC")
-API_KEY = os.environ.get("SCRAPER_API_KEY")
+URL = os.environ.get("CARD_URL").strip()
+NTFY_TOPIC = os.environ.get("NTFY_TOPIC").strip()
+API_KEY = os.environ.get("SCRAPER_API_KEY").strip()
 
 def check_price():
     print("Iniciando scraper a través de API proxy...")
