@@ -4,8 +4,8 @@ import requests
 import os
 
 # Configuración (Usa variables de entorno por seguridad)
-URL = os.getenv("CARD_URL")
-NTFY_TOPIC = os.getenv("NTFY_TOPIC")
+URL = os.environ.get("CARD_URL")
+NTFY_TOPIC = os.environ.get("NTFY_TOPIC")
 
 def check_price():
     scraper = cloudscraper.create_scraper(
