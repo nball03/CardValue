@@ -78,8 +78,8 @@ def send_notification(precio_actual, precio_anterior):
         etiquetas = "green_circle,pirate_flag" # Añadimos el emoji por etiqueta
     else:
         mensaje = f"El precio ha cambiado de {precio_anterior} a {precio_actual}"
-        titulo = "Alerta One Piece Card" # Quitamos el emoji del texto
-        etiquetas = "warning,pirate_flag,chart_with_upwards_trend"
+        titulo = "Alerta Luffy Torau" # Quitamos el emoji del texto
+        etiquetas = "warning,pirate_flag"
 
     try:
         requests.post(f"https://ntfy.sh/{NTFY_TOPIC}",
