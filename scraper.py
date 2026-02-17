@@ -74,15 +74,17 @@ def send_notification(precio_actual, precio_anterior):
     # Preparamos un mensaje distinto si es la primera vez
     if precio_anterior is None:
         mensaje = f"Primera lectura registrada. Precio inicial: {precio_actual}"
-        titulo = "🟢 Tracker Inicializado"
+        titulo = "Tracker Inicializado" # Quitamos el emoji del texto
+        etiquetas = "green_circle,pirate_flag" # Añadimos el emoji por etiqueta
     else:
         mensaje = f"El precio ha cambiado de {precio_anterior} a {precio_actual}"
-        titulo = "⚠️ Alerta One Piece Card"
+        titulo = "Alerta One Piece Card" # Quitamos el emoji del texto
+        etiquetas = "warning,pirate_flag,chart_with_upwards_trend"
 
     try:
         requests.post(f"https://ntfy.sh/{NTFY_TOPIC}",
                       data=mensaje.encode('utf-8'),
-                      headers={"Title": titulo, "Tags": "pirate_flag,chart_with_upwards_trend"})
+                      headers={"Title": titulo, "Tags": etiquetas})
         print("📱 ¡Notificación enviada!")
     except Exception as e:
         print(f"❌ Error al enviar: {e}")
