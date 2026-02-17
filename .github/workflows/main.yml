@@ -1,33 +1,47 @@
-name: One Piece Card Monitor
+name: Cardmarket Bot 🏴‍☠️
 
-# Cuándo se va a ejecutar este bot
 on:
   schedule:
-    - cron: '0 * * * *' # Se ejecuta en el minuto 0 de cada hora
-  workflow_dispatch: # ¡Magia! Esto crea un botón para ejecutarlo manualmente cuando quieras
+    # IMPORTANTE: Los servidores usan hora UTC. 
+    # Para que se ejecute a las 22:00 en España (horario de invierno), ponemos las 21:00 UTC.
+    - cron: '0 21 * * *'
+  workflow_dispatch:
+
+# Le damos permiso al bot para escribir en tu repositorio
+permissions:
+  contents: write
 
 jobs:
-  run-bot:
-    runs-on: ubuntu-latest # Usamos un servidor Linux gratuito de GitHub
+  run-scraper:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Descargar el código del repositorio
-        uses: actions/checkout@v3
+      - name: Descargar el código
+        uses: actions/checkout@v4
 
-      - name: Configurar el entorno de Python
-        uses: actions/setup-python@v4
+      - name: Configurar Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10' # Una versión estable
+          python-version: '3.10'
 
-      - name: Instalar las librerías
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
 
       - name: Ejecutar el Scraper
         env:
-          # Inyectamos los secretos de GitHub como variables de entorno
           CARD_URL: ${{ secrets.CARD_URL }}
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
           SCRAPER_API_KEY: ${{ secrets.SCRAPER_API_KEY }}
         run: python scraper.py
+
+      - name: Guardar la memoria en GitHub
+        run: |
+          # Configuramos el "usuario" que va a guardar el archivo
+          git config --global user.name "Cardmarket Bot"
+          git config --global user.email "bot@github.local"
+          
+          # Añadimos el archivo de memoria
+          git add ultimo_precio.txt
+          
+          # Si ha habido cambios, hacemos commit y lo subimos. Si no, no hace nada.
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Actualizar memoria del bot" && git push)
