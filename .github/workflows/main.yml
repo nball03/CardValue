@@ -4,7 +4,7 @@ on:
   schedule:
     # IMPORTANTE: Los servidores usan hora UTC. 
     # Para que se ejecute a las 22:00 en España (horario de invierno), ponemos las 21:00 UTC.
-    - cron: '0 21 * * *'
+    - cron: '12 20 * * *'
   workflow_dispatch:
 
 # Le damos permiso al bot para escribir en tu repositorio
