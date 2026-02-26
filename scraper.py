@@ -26,8 +26,8 @@ def check_price():
     payload = {
         'api_key': API_KEY,
         'url': URL,
-        'country_code': 'eu',
-        'render': 'true'
+        #'country_code': 'eu',
+        #'render': 'true'
     }
     
     print("Conectando con el proxy (IP Europea + Render JS)...")
