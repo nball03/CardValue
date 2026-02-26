@@ -6,6 +6,8 @@ from bs4 import BeautifulSoup
 URL = os.environ.get("CARD_URL").strip()
 NTFY_TOPIC = os.environ.get("NTFY_TOPIC").strip()
 API_KEY = os.environ.get("SCRAPER_API_KEY").strip()
+SMARTTHINGS_TOKEN = os.environ.get("SMARTTHINGS_TOKEN")
+DEVICE_ID = os.environ.get("DEVICE_ID")
 
 # Archivo donde guardaremos la "memoria" del bot
 ARCHIVO_PRECIO = "ultimo_precio.txt"
@@ -57,6 +59,7 @@ def check_price():
                 if precio_actual != ultimo_precio:
                     print("⚠️ ¡EL PRECIO HA CAMBIADO! Enviando notificación...")
                     send_notification(precio_actual, ultimo_precio)
+                    despertar_google_home()
                     guardar_nuevo_precio(precio_actual)
                 else:
                     print("💤 El precio sigue igual. No se envía notificación.")
@@ -88,6 +91,31 @@ def send_notification(precio_actual, precio_anterior):
         print("📱 ¡Notificación enviada!")
     except Exception as e:
         print(f"❌ Error al enviar: {e}")
+
+def despertar_google_home():
+    print("📡 Enviando señal al altavoz Google Home...")
+    
+    url = f"https://api.smartthings.com/v1/devices/{DEVICE_ID}/commands"
+    headers = {
+        "Authorization": f"Bearer {SMARTTHINGS_TOKEN}",
+        "Content-Type": "application/json"
+    }
+    # Le decimos al interruptor virtual que se ponga en "on"
+    payload = {
+        "commands": [
+            {
+                "component": "main",
+                "capability": "switch",
+                "command": "on"
+            }
+        ]
+    }
+    
+    try:
+        requests.post(url, headers=headers, json=payload)
+        print("🔊 ¡Señal enviada a la casa! El altavoz debería estar hablando.")
+    except Exception as e:
+        print(f"❌ Error al contactar con Google Home: {e}")
 
 if __name__ == "__main__":
     check_price()
