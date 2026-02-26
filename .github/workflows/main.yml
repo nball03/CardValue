@@ -32,6 +32,8 @@ jobs:
           CARD_URL: ${{ secrets.CARD_URL }}
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
           SCRAPER_API_KEY: ${{ secrets.SCRAPER_API_KEY }}
+          SMARTTHINGS_TOKEN: ${{ secrets.SMARTTHINGS_TOKEN }}
+          DEVICE_ID: ${{ secrets.DEVICE_ID }}
         run: python scraper.py
 
       - name: Guardar la memoria en GitHub
